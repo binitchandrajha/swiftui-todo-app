@@ -38,7 +38,7 @@ struct ContentView: View {
         VStack {
             List(todoList){ list in
                 TodoItemView(todoItem: list)
-            }
+            }.listRowSpacing(10).listStyle(.plain)
             Spacer()
         }
     }

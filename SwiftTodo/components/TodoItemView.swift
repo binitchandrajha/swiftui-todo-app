@@ -32,7 +32,7 @@ struct TodoItemView: View {
                Divider()
                AppIcon(icon: "pencil", size: 18, foregroundColor: Color.blue, onClick: handleEditTodoItem)
            }
-       }
+       }.padding().background(Color.white).cornerRadius(8).shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2).listRowSeparator(.hidden).listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 4, trailing: 16))
     }
 }
 

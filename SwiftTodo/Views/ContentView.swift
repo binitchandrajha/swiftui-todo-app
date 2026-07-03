@@ -70,6 +70,11 @@ struct ContentView: View {
             isCompleted: false
         )
     ]
+    @State private var isBottomSheetModalOpen: Bool = false
+    
+    func handleOpenBottomSheetModal() {
+        isBottomSheetModalOpen.toggle()
+    }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
@@ -78,7 +83,9 @@ struct ContentView: View {
                 }.listRowSpacing(10).listStyle(.plain)
                 Spacer()
             }
-            FabButton(onClick:  {}).padding(.trailing, 24).padding(. bottom, 40)
+            FabButton(onClick:  handleOpenBottomSheetModal).padding(.trailing, 24).padding(. bottom, 40)
+        }.sheet(isPresented: $isBottomSheetModalOpen){
+            AddNewTodoView().presentationDetents([.height(200)]).presentationBackground(Color.white)
         }
     }
 }

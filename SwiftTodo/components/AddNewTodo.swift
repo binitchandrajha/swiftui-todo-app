@@ -17,6 +17,13 @@ struct AddNewTodoView: View {
             InputFeild(
                 text: $task
             ).padding(.horizontal, 16)
+            Spacer().frame(height: 40)
+            PrimaryButton(action: {}, label: "Save")
+            
+            Spacer().frame(height: 20)
+            
+            PrimaryButton(action: {}, label: "Cancel", backgroundColor: .clear,
+                          textColor: .gray,showShadow: false)
         }
     }
 }

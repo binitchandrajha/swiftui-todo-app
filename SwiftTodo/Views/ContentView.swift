@@ -85,7 +85,7 @@ struct ContentView: View {
             }
             FabButton(onClick:  handleOpenBottomSheetModal).padding(.trailing, 24).padding(. bottom, 40)
         }.sheet(isPresented: $isBottomSheetModalOpen){
-            AddNewTodoView().presentationDetents([.height(200)]).presentationBackground(Color.white)
+            AddNewTodoView().presentationDetents([.height(350)]).presentationBackground(Color.white)
         }
     }
 }

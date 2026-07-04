@@ -71,22 +71,42 @@ struct ContentView: View {
         )
     ]
     @State private var isBottomSheetModalOpen: Bool = false
+    @State private var isDeleteConfirmationModalOpen: Bool = false
+    @State private var selectedTodo: TodoItem? = nil
     
     func handleOpenBottomSheetModal() {
         isBottomSheetModalOpen.toggle()
+    }
+    func handleOpenDeleteConfirmationModal(item: TodoItem) {
+        print(item)
+        selectedTodo = item
+        isDeleteConfirmationModalOpen.toggle()
     }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
                 List(todoList){ list in
-                    TodoItemView(todoItem: list)
+                    TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
+                        item in self.handleOpenDeleteConfirmationModal(item: item)
+                    })
                 }.listRowSpacing(10).listStyle(.plain)
                 Spacer()
             }
             FabButton(onClick:  handleOpenBottomSheetModal).padding(.trailing, 24).padding(. bottom, 40)
-        }.sheet(isPresented: $isBottomSheetModalOpen){
+        }
+        .overlay{
+            if isDeleteConfirmationModalOpen {
+                Color.black.opacity(0.3)
+                    .onTapGesture {
+                        isDeleteConfirmationModalOpen = false
+                    }
+                ConfirmationPopup(todoTitle: selectedTodo?.title ?? "").padding(16)
+            }
+        }
+        .sheet(isPresented: $isBottomSheetModalOpen){
             AddNewTodoView().presentationDetents([.height(350)]).presentationBackground(Color.white)
         }
+    
     }
 }
 

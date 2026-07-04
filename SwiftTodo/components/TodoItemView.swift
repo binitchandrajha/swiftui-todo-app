@@ -10,11 +10,8 @@ import SwiftUI
 
 struct TodoItemView: View {
     var todoItem: TodoItem
-    
-    func handleDeleteTodoItem() {
-        print("delete todo item")
-    }
-    
+    let hanldeOpenConfirmationPopup: (TodoItem) -> Void
+        
     func handleEditTodoItem() {
         print("edit todo item")
     }
@@ -28,7 +25,9 @@ struct TodoItemView: View {
            }
            Spacer()
            HStack(){
-               AppIcon(icon: "trash", size: 18, foregroundColor: Color.red, onClick: handleDeleteTodoItem)
+               AppIcon(icon: "trash", size: 18, foregroundColor: Color.red, onClick: {
+                   hanldeOpenConfirmationPopup(todoItem)
+               })
                Divider()
                AppIcon(icon: "pencil", size: 18, foregroundColor: Color.blue, onClick: handleEditTodoItem)
            }
@@ -40,8 +39,11 @@ struct TodoItemView: View {
     TodoItemView(
         todoItem: TodoItem(
             title: "Todo item",
-            isCompleted: false
-        )
+            isCompleted: false,
+        ),
+        hanldeOpenConfirmationPopup: { item in
+            print("delete \(item.title)")
+        }
     )
 }
 

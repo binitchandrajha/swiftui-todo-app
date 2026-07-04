@@ -8,68 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var todoList: [TodoItem] = [
-        TodoItem(
-            title: "TodoItem 1",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 2",
-            isCompleted: true
-        ),
-        TodoItem(
-            title: "TodoItem 3",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 4",
-            isCompleted: true
-        ),
-        TodoItem(
-            title: "TodoItem 5",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 6",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 7",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 8",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 9",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 10",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 11",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 12",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 13",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 14",
-            isCompleted: false
-        ),
-        TodoItem(
-            title: "TodoItem 15",
-            isCompleted: false
-        )
-    ]
+    @State private var todoList: [TodoItem] = []
     @State private var isBottomSheetModalOpen: Bool = false
     @State private var isDeleteConfirmationModalOpen: Bool = false
     @State private var selectedTodo: TodoItem? = nil
@@ -85,14 +24,25 @@ struct ContentView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
-                List(todoList){ list in
-                    TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
-                        item in self.handleOpenDeleteConfirmationModal(item: item)
-                    })
-                }.listRowSpacing(10).listStyle(.plain)
+                if todoList.isEmpty {
+                    EmptyView(
+                        onClick: {
+                            handleOpenBottomSheetModal()
+                        }
+                    )
+                } else {
+                    List(todoList){ list in
+                        TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
+                            item in self.handleOpenDeleteConfirmationModal(item: item)
+                        })
+                    }.listRowSpacing(10).listStyle(.plain)
+                }
+               
                 Spacer()
             }
-            FabButton(onClick:  handleOpenBottomSheetModal).padding(.trailing, 24).padding(. bottom, 40)
+            if(!todoList.isEmpty) {
+                FabButton(onClick:  handleOpenBottomSheetModal).padding(.trailing, 24).padding(. bottom, 40)
+            }
         }
         .overlay{
             if isDeleteConfirmationModalOpen {

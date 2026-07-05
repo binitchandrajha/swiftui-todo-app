@@ -9,12 +9,13 @@ import Foundation
 import SwiftUI
 
 struct AddNewTodoView: View {
-    @State private var task = ""
+    @Binding var task: String
     let onSaveClick: (TodoItem) -> Void
     let onCancelClick: () -> Void
+    var isEditMode: Bool = false
     var body: some View {
         VStack{
-            Text("Add New Todo").font(.system(size: 20, weight: .bold))
+            Text(isEditMode ? "Update Todo" : "Add New Todo").font(.system(size: 20, weight: .bold))
             Spacer().frame(height: 20)
             InputFeild(
                 text: $task
@@ -24,7 +25,7 @@ struct AddNewTodoView: View {
                 let todoItem = TodoItem(title: task, isCompleted: false)
                 onSaveClick(todoItem)
                 task = ""
-            }, label: "Save")
+            }, label: isEditMode ? "Update" : "Save")
             
             Spacer().frame(height: 20)
             
@@ -39,8 +40,10 @@ struct AddNewTodoView: View {
         title: "New Todo", isCompleted: false
     )
     AddNewTodoView(
+        task: .constant(""),
         onSaveClick: { todoItem in
             print("\(todoItem)")
-        }, onCancelClick: {}
+        }, onCancelClick: {},
+        isEditMode: false
     )
 }

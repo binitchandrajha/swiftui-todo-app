@@ -13,11 +13,15 @@ struct ContentView: View {
     @State private var isDeleteConfirmationModalOpen: Bool = false
     @State private var isMarkCompleteModalOpen: Bool = false
     @State private var selectedTodo: TodoItem? = nil
+    @State private var isEditMode: Bool = false
+    @State private var task = ""
     
     @EnvironmentObject var toastManager: ToastManager
     
     func handleOpenBottomSheetModal() {
         isBottomSheetModalOpen.toggle()
+        task = ""
+        isEditMode = false
     }
     func handleOpenDeleteConfirmationModal(item: TodoItem) {
         print(item)
@@ -25,9 +29,19 @@ struct ContentView: View {
         isDeleteConfirmationModalOpen.toggle()
     }
     func onAddTodo(todo: TodoItem) {
-        todoList.append(todo)
-        isBottomSheetModalOpen = false
-        toastManager.success("Todo added")
+        if(isEditMode){
+            let currentIndex = todoList.firstIndex(where: {$0.id == selectedTodo?.id})
+            if let currentIndex = currentIndex {
+                todoList[currentIndex] = todo
+            }
+            isBottomSheetModalOpen = false
+            isEditMode = false
+            toastManager.success("Todo updated")
+        } else{
+            todoList.append(todo)
+            isBottomSheetModalOpen = false
+            toastManager.success("Todo added")
+        }
     }
     func onTodoMarkComplete(todo: TodoItem){
         selectedTodo = todo
@@ -56,6 +70,12 @@ struct ContentView: View {
         isDeleteConfirmationModalOpen = false
         toastManager.success("Todo deleted!")
     }
+    func handleSetEditMode(item: TodoItem){
+        isEditMode = true
+        isBottomSheetModalOpen = true
+        selectedTodo = item
+        task = item.title
+    }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
@@ -71,6 +91,8 @@ struct ContentView: View {
                             item in self.handleOpenDeleteConfirmationModal(item: item)
                         },handleMarkCompleteTodo: { item in
                            onTodoMarkComplete(todo: item)
+                        }, handleClickEditIcon: { item in
+                            handleSetEditMode(item: item)
                         })
                     }.listRowSpacing(10).listStyle(.plain)
                 }
@@ -128,9 +150,11 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isBottomSheetModalOpen){
             AddNewTodoView(
+                task: $task,
                 onSaveClick: { item in
                     onAddTodo(todo: item)
-                }, onCancelClick: {}
+                }, onCancelClick: {},
+                isEditMode: isEditMode,
             ).presentationDetents([.height(350)]).presentationBackground(Color.white)
         }
     

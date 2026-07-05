@@ -16,6 +16,8 @@ struct ConfirmationPopup : View {
     var actionButtonTitle: String = "Delete"
     var actionButtonBgColor: Color = Color.red
     var headerIconBgColor: Color = Color.red.opacity(0.1)
+    let actionClick: () -> Void
+    let cancelClick: () -> Void
     var body: some View {
             VStack {
                 Circle().fill(headerIconBgColor).frame(width: 70, height: 70).overlay(
@@ -30,7 +32,7 @@ struct ConfirmationPopup : View {
                 Spacer().frame(height: 40)
                 HStack {
                     PrimaryButton(
-                        action: {},
+                        action: cancelClick,
                         label: "Cancel",
                         backgroundColor: .clear,
                         textColor: Color.gray,
@@ -40,7 +42,7 @@ struct ConfirmationPopup : View {
                         
                     )
                     PrimaryButton(
-                        action: {},
+                        action: actionClick,
                         label: actionButtonTitle,
                         backgroundColor: actionButtonBgColor,
                         showShadow: false,
@@ -55,6 +57,8 @@ struct ConfirmationPopup : View {
 
 #Preview {
     ConfirmationPopup(
-        description: "Are you sure want to delete this todo?"
+        description: "Are you sure want to delete this todo?",
+        actionClick: {},
+        cancelClick: {}
     )
 }

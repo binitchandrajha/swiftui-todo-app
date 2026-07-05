@@ -12,6 +12,8 @@ struct TodoItemView: View {
     var todoItem: TodoItem
     let hanldeOpenConfirmationPopup: (TodoItem) -> Void
     let handleMarkCompleteTodo: (TodoItem) -> Void
+    
+    @State private var showCompletedAlert = false
         
     func handleEditTodoItem() {
         print("edit todo item")
@@ -21,7 +23,11 @@ struct TodoItemView: View {
            HStack(){
                RadioButton(
                 isChecked: todoItem.isCompleted, onClick: {
-                    handleMarkCompleteTodo(todoItem)
+                    if(!todoItem.isCompleted) {
+                        handleMarkCompleteTodo(todoItem)
+                    } else {
+                       showCompletedAlert = true
+                    }
                 }
                )
                Text(todoItem.title)
@@ -35,6 +41,11 @@ struct TodoItemView: View {
                AppIcon(icon: "pencil", size: 18, foregroundColor: Color.blue, onClick: handleEditTodoItem)
            }
        }.padding().background(Color.white).cornerRadius(8).shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2).listRowSeparator(.hidden).listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 4, trailing: 16))
+           .alert("Already Completed", isPresented: $showCompletedAlert) {
+               Button("OK", role: .cancel) { }
+           } message: {
+               Text("This todo has already been marked as completed.")
+           }
     }
 }
 

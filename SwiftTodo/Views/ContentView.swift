@@ -21,6 +21,10 @@ struct ContentView: View {
         selectedTodo = item
         isDeleteConfirmationModalOpen.toggle()
     }
+    func onAddTodo(todo: TodoItem) {
+        todoList.append(todo)
+        isBottomSheetModalOpen = false
+    }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
@@ -54,7 +58,11 @@ struct ContentView: View {
             }
         }
         .sheet(isPresented: $isBottomSheetModalOpen){
-            AddNewTodoView().presentationDetents([.height(350)]).presentationBackground(Color.white)
+            AddNewTodoView(
+                onSaveClick: { item in
+                    onAddTodo(todo: item)
+                }, onCancelClick: {}
+            ).presentationDetents([.height(350)]).presentationBackground(Color.white)
         }
     
     }

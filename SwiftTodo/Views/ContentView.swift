@@ -44,6 +44,13 @@ struct ContentView: View {
     func closeMarkCompleteModal(){
         isMarkCompleteModalOpen = false
     }
+    func confirmDeleteTodo(){
+        guard let selectedTodo else {return}
+        todoList.removeAll{
+            $0.id == selectedTodo.id
+        }
+        isDeleteConfirmationModalOpen = false
+    }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
@@ -75,7 +82,7 @@ struct ContentView: View {
                     .onTapGesture {
                         isDeleteConfirmationModalOpen = false
                     }
-                ConfirmationPopup(description: "\(selectedTodo?.title ?? "") will be permantently deleted.", actionClick: {}, cancelClick: closeDeleteConfirmationModal ).padding(16)
+                ConfirmationPopup(description: "\(selectedTodo?.title ?? "") will be permantently deleted.", actionClick: confirmDeleteTodo, cancelClick: closeDeleteConfirmationModal ).padding(16)
             }
             if isMarkCompleteModalOpen {
                 Color.black.opacity(0.3)

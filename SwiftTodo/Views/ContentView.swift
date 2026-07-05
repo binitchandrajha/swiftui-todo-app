@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var isMarkCompleteModalOpen: Bool = false
     @State private var selectedTodo: TodoItem? = nil
     
+    @EnvironmentObject var toastManager: ToastManager
+    
     func handleOpenBottomSheetModal() {
         isBottomSheetModalOpen.toggle()
     }
@@ -25,6 +27,7 @@ struct ContentView: View {
     func onAddTodo(todo: TodoItem) {
         todoList.append(todo)
         isBottomSheetModalOpen = false
+        toastManager.success("Todo added")
     }
     func onTodoMarkComplete(todo: TodoItem){
         selectedTodo = todo
@@ -37,6 +40,7 @@ struct ContentView: View {
         }
         
         isMarkCompleteModalOpen = false
+        toastManager.success("Todo marked as complete!")
     }
     func closeDeleteConfirmationModal(){
         isDeleteConfirmationModalOpen = false
@@ -50,6 +54,7 @@ struct ContentView: View {
             $0.id == selectedTodo.id
         }
         isDeleteConfirmationModalOpen = false
+        toastManager.success("Todo deleted!")
     }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
@@ -104,6 +109,23 @@ struct ContentView: View {
                 ).padding(16)
             }
         }
+        .overlay(alignment: .top) {
+            if let toast = toastManager.toast {
+                ToastView(toast: toast)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .animation(.easeInOut, value: toastManager.toast)
+                    .padding(.top, 16)
+            }
+        }
+        .onChange(of: toastManager.toast) { _, newToast in
+            if newToast != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    withAnimation {
+                        toastManager.toast = nil
+                    }
+                }
+            }
+        }
         .sheet(isPresented: $isBottomSheetModalOpen){
             AddNewTodoView(
                 onSaveClick: { item in
@@ -117,4 +139,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(ToastManager())
 }

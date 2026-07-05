@@ -13,7 +13,7 @@ struct TodoItemView: View {
     let hanldeOpenConfirmationPopup: (TodoItem) -> Void
     let handleMarkCompleteTodo: (TodoItem) -> Void
     
-    @State private var showCompletedAlert = false
+    @EnvironmentObject var toastManager: ToastManager
         
     func handleEditTodoItem() {
         print("edit todo item")
@@ -26,7 +26,7 @@ struct TodoItemView: View {
                     if(!todoItem.isCompleted) {
                         handleMarkCompleteTodo(todoItem)
                     } else {
-                       showCompletedAlert = true
+                        toastManager.error("Already completed!")
                     }
                 }
                )
@@ -41,11 +41,6 @@ struct TodoItemView: View {
                AppIcon(icon: "pencil", size: 18, foregroundColor: Color.blue, onClick: handleEditTodoItem)
            }
        }.padding().background(Color.white).cornerRadius(8).shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2).listRowSeparator(.hidden).listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 4, trailing: 16))
-           .alert("Already Completed", isPresented: $showCompletedAlert) {
-               Button("OK", role: .cancel) { }
-           } message: {
-               Text("This todo has already been marked as completed.")
-           }
     }
 }
 

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct SwiftTodoApp: App {
+    @StateObject private var toastManager = ToastManager()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(toastManager)
         }
     }
 }

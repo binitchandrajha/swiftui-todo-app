@@ -12,9 +12,10 @@ struct RadioButton: View {
     var isChecked: Bool
     var onClick: () -> Void
     var body: some View {
-        Button(action: onClick) {
-            AppIcon(icon: isChecked ? "checkmark.circle.fill" : "circle", size: 32, foregroundColor: Color.blue)
-        }
+        AppIcon(icon: isChecked ? "checkmark.circle.fill" : "circle", size: 32, foregroundColor: Color.blue, onClick: {
+            print("mark complete triggeredd...")
+            onClick()
+        })
     }
 }
 

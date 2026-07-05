@@ -9,16 +9,24 @@ import Foundation
 import SwiftUI
 
 struct ConfirmationPopup : View {
-    var todoTitle: String
+    var iconName : String = "trash"
+    var iconColor: Color = Color.red
+    var headerTitle: String = "Delete Todo?"
+    var description: String = ""
+    var actionButtonTitle: String = "Delete"
+    var actionButtonBgColor: Color = Color.red
+    var headerIconBgColor: Color = Color.red.opacity(0.1)
     var body: some View {
             VStack {
-                Circle().fill(Color.red.opacity(0.1)).frame(width: 70, height: 70).overlay(
-                    Image(systemName: "trash").font(.system(size: 24,weight: .semibold)).foregroundStyle(.red)
+                Circle().fill(headerIconBgColor).frame(width: 70, height: 70).overlay(
+                    Image(systemName: iconName).font(.system(size: 24,weight: .semibold)).foregroundStyle(iconColor)
                 )
                 Spacer().frame(height: 20)
-                Text("Delete Todo?").font(.system(size: 18,weight: .bold))
+                Text(headerTitle).font(.system(size: 18,weight: .bold))
                 Spacer().frame(height: 20)
-                Text("\(todoTitle) will be permantently deleted.")
+                if (!description.isEmpty) {
+                    Text(description)
+                }
                 Spacer().frame(height: 40)
                 HStack {
                     PrimaryButton(
@@ -33,8 +41,8 @@ struct ConfirmationPopup : View {
                     )
                     PrimaryButton(
                         action: {},
-                        label: "Delete",
-                        backgroundColor: Color.red,
+                        label: actionButtonTitle,
+                        backgroundColor: actionButtonBgColor,
                         showShadow: false,
                     )
                 }
@@ -47,6 +55,6 @@ struct ConfirmationPopup : View {
 
 #Preview {
     ConfirmationPopup(
-        todoTitle: "Buy milk"
+        description: "Are you sure want to delete this todo?"
     )
 }

@@ -16,7 +16,7 @@ struct AppIcon: View {
     var body: some View {
         Button(action : onClick) {
             Image(systemName: icon).font(.system(size: size)).foregroundStyle(foregroundColor)
-        }
+        }.buttonStyle(.plain)
     }
 }
 

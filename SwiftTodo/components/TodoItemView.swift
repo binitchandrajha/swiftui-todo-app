@@ -11,6 +11,7 @@ import SwiftUI
 struct TodoItemView: View {
     var todoItem: TodoItem
     let hanldeOpenConfirmationPopup: (TodoItem) -> Void
+    let handleMarkCompleteTodo: (TodoItem) -> Void
         
     func handleEditTodoItem() {
         print("edit todo item")
@@ -19,7 +20,9 @@ struct TodoItemView: View {
        HStack(){
            HStack(){
                RadioButton(
-                isChecked: true, onClick: {}
+                isChecked: todoItem.isCompleted, onClick: {
+                    handleMarkCompleteTodo(todoItem)
+                }
                )
                Text(todoItem.title)
            }
@@ -43,6 +46,9 @@ struct TodoItemView: View {
         ),
         hanldeOpenConfirmationPopup: { item in
             print("delete \(item.title)")
+        },
+        handleMarkCompleteTodo: { item in
+            print("mark-complete \(item.title)")
         }
     )
 }

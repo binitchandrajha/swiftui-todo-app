@@ -33,11 +33,9 @@ struct ContentView: View {
     }
     func onAddTodo(todo: TodoItem) {
         if(isEditMode){
-            print("todo-list ===>>>\(todoList)")
             let currentIndex = todoList.firstIndex(where: {$0.id == selectedTodo?.id})
             if let currentIndex = currentIndex {
                 todoList[currentIndex] = todo
-                print("todoList[currentIndex] ===>>>> \(todoList[currentIndex])")
             }
             handleFilteredTodoStatus()
             isBottomSheetModalOpen = false

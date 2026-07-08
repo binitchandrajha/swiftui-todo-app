@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AddNewTodoView: View {
     @Binding var task: String
+    var todoItem: TodoItem? = nil
     let onSaveClick: (TodoItem) -> Void
     let onCancelClick: () -> Void
     var isEditMode: Bool = false
@@ -22,9 +23,15 @@ struct AddNewTodoView: View {
             ).padding(.horizontal, 16)
             Spacer().frame(height: 40)
             PrimaryButton(action: {
-                let todoItem = TodoItem(title: task, isCompleted: false)
-                onSaveClick(todoItem)
-                task = ""
+                if !isEditMode {
+                    let todoItem = TodoItem(title: task, isCompleted: false)
+                    onSaveClick(todoItem)
+                    task = ""
+                } else if let todoItem {
+                    let updatedTodoItem = TodoItem(id: todoItem.id, title: task, isCompleted: todoItem.isCompleted)
+                    onSaveClick(updatedTodoItem)
+                    task = ""
+                }
             }, label: isEditMode ? "Update" : "Save")
             
             Spacer().frame(height: 20)

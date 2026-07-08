@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var todoList: [TodoItem] = []
+    @State private var filteredTodoList: [TodoItem] = []
     @State private var isBottomSheetModalOpen: Bool = false
     @State private var isDeleteConfirmationModalOpen: Bool = false
     @State private var isMarkCompleteModalOpen: Bool = false
@@ -32,15 +33,19 @@ struct ContentView: View {
     }
     func onAddTodo(todo: TodoItem) {
         if(isEditMode){
+            print("todo-list ===>>>\(todoList)")
             let currentIndex = todoList.firstIndex(where: {$0.id == selectedTodo?.id})
             if let currentIndex = currentIndex {
                 todoList[currentIndex] = todo
+                print("todoList[currentIndex] ===>>>> \(todoList[currentIndex])")
             }
+            handleFilteredTodoStatus()
             isBottomSheetModalOpen = false
             isEditMode = false
             toastManager.success("Todo updated")
         } else{
             todoList.append(todo)
+            handleFilteredTodoStatus()
             isBottomSheetModalOpen = false
             toastManager.success("Todo added")
         }
@@ -56,6 +61,7 @@ struct ContentView: View {
         }
         
         isMarkCompleteModalOpen = false
+        handleFilteredTodoStatus()
         toastManager.success("Todo marked as complete!")
     }
     func closeDeleteConfirmationModal(){
@@ -70,6 +76,7 @@ struct ContentView: View {
             $0.id == selectedTodo.id
         }
         isDeleteConfirmationModalOpen = false
+        handleFilteredTodoStatus()
         toastManager.success("Todo deleted!")
     }
     func handleSetEditMode(item: TodoItem){
@@ -80,6 +87,16 @@ struct ContentView: View {
     }
     func handleUpdateTodoStatus(updatedTodoStatus: TodoStatus.RawValue){
         currentTodoStatus = updatedTodoStatus
+        handleFilteredTodoStatus()
+    }
+    func handleFilteredTodoStatus(){
+        if(currentTodoStatus == TodoStatus.all.rawValue){
+            filteredTodoList = todoList
+        } else if(currentTodoStatus == TodoStatus.pending.rawValue){
+            filteredTodoList = todoList.filter({!$0.isCompleted})
+        } else {
+            filteredTodoList = todoList.filter({$0.isCompleted})
+        }
     }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
@@ -96,15 +113,21 @@ struct ContentView: View {
                         updateCurrentStatus: {status in  self.handleUpdateTodoStatus(updatedTodoStatus: status)}
                     )
                     Spacer().frame(height: 10)
-                    List(todoList){ list in
-                        TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
-                            item in self.handleOpenDeleteConfirmationModal(item: item)
-                        },handleMarkCompleteTodo: { item in
-                           onTodoMarkComplete(todo: item)
-                        }, handleClickEditIcon: { item in
-                            handleSetEditMode(item: item)
-                        })
-                    }.listRowSpacing(10).listStyle(.plain)
+                    if filteredTodoList.isEmpty && currentTodoStatus == TodoStatus.pending.rawValue{
+                        Text("No pending Todos").padding(16)
+                    } else if(filteredTodoList.isEmpty && currentTodoStatus == TodoStatus.done.rawValue){
+                        Text("No completed Todos").padding(16)
+                    } else {
+                        List(filteredTodoList){ list in
+                            TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
+                                item in self.handleOpenDeleteConfirmationModal(item: item)
+                            },handleMarkCompleteTodo: { item in
+                               onTodoMarkComplete(todo: item)
+                            }, handleClickEditIcon: { item in
+                                handleSetEditMode(item: item)
+                            })
+                        }.listRowSpacing(10).listStyle(.plain)
+                    }
                 }
                
                 Spacer()
@@ -161,9 +184,13 @@ struct ContentView: View {
         .sheet(isPresented: $isBottomSheetModalOpen){
             AddNewTodoView(
                 task: $task,
+                todoItem: selectedTodo,
                 onSaveClick: { item in
                     onAddTodo(todo: item)
-                }, onCancelClick: {},
+                }, onCancelClick: {
+                    isBottomSheetModalOpen = false
+                    task = ""
+                },
                 isEditMode: isEditMode,
             ).presentationDetents([.height(350)]).presentationBackground(Color.white)
         }

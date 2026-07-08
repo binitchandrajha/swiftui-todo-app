@@ -12,3 +12,4 @@ enum ToastType {
     case error
     case warning
 }
+

@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var selectedTodo: TodoItem? = nil
     @State private var isEditMode: Bool = false
     @State private var task = ""
+    @State private var currentTodoStatus: TodoStatus.RawValue = TodoStatus.all.rawValue
+    
     
     @EnvironmentObject var toastManager: ToastManager
     
@@ -76,6 +78,9 @@ struct ContentView: View {
         selectedTodo = item
         task = item.title
     }
+    func handleUpdateTodoStatus(updatedTodoStatus: TodoStatus.RawValue){
+        currentTodoStatus = updatedTodoStatus
+    }
     var body: some View {
         ZStack(alignment: .bottomTrailing){
             VStack {
@@ -86,6 +91,11 @@ struct ContentView: View {
                         }
                     )
                 } else {
+                    TodoStatusTab(
+                        currentStatus: currentTodoStatus,
+                        updateCurrentStatus: {status in  self.handleUpdateTodoStatus(updatedTodoStatus: status)}
+                    )
+                    Spacer().frame(height: 10)
                     List(todoList){ list in
                         TodoItemView(todoItem: list, hanldeOpenConfirmationPopup: {
                             item in self.handleOpenDeleteConfirmationModal(item: item)
